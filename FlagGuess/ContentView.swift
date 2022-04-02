@@ -11,6 +11,9 @@ struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US" ]
     @State private var currentCountry = Int.random(in: 0...2)
     @State private var currentScore = 0
+    @State private var selectedFlag = ""
+    @State private var round = 0
+    @State private var gameOver = false
     
     @State private var correct = ""
     @State private var showScore = false
@@ -66,21 +69,44 @@ struct ContentView: View {
         } message: {
             Text("Your score is \(currentScore)")
         }
+        
+        .alert("Game over", isPresented: $gameOver){
+            Button("Start over", action: resetGame)
+        } message: {
+            Text("Your final score was \(currentScore)")
+        }
     }
     
     func selectFlag(_ number: Int){
+        selectedFlag = countries[number]
+        round += 1
+        
         if(number == currentCountry){
             correct = "Correct"
             currentScore += 1
         } else {
-            correct = "Wrong"
+            correct = "Wrong, that was the flag of \(selectedFlag)"
+            if(currentScore > 0) {
+                currentScore -= 1
+            } else {
+                currentScore = 0
+            }
         }
-        showScore = true
+        if(round < 8){
+            showScore = true
+        } else {
+            gameOver = true
+        }
     }
     
     func resetRound () {
         countries.shuffle()
         currentCountry = Int.random(in: 0...2)
+    }
+    func resetGame () {
+        resetRound()
+        round = 0
+        currentScore = 0
     }
 }
 
