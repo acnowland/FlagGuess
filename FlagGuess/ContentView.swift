@@ -7,6 +7,31 @@
 
 import SwiftUI
 
+struct ButtonFlag: View {
+    var specificCountry: String
+    
+    var body: some View {
+        Image(specificCountry)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .shadow(radius: 5)
+    }
+}
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .font(.title.weight(.heavy))
+            .foregroundColor(.white)
+    }
+}
+
+extension View {
+    func largeTitle() -> some View {
+        modifier(Title())
+    }
+}
+
 struct ContentView: View {
     @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Monaco", "Nigeria", "Poland", "Russia", "Spain", "UK", "US" ]
     @State private var currentCountry = Int.random(in: 0...2)
@@ -35,8 +60,7 @@ struct ContentView: View {
                     .foregroundColor(.white)
                     .font(.subheadline.weight(.semibold))
                 Text("\(countries[currentCountry])")
-                    .foregroundColor(.white)
-                    .font(.title.weight(.heavy))
+                    .largeTitle()
                 
                 Spacer()
                 Spacer()
@@ -46,10 +70,7 @@ struct ContentView: View {
                         Button {
                             selectFlag(number)
                         } label : {
-                            Image(countries[number])
-                                .renderingMode(.original)
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
+                            ButtonFlag(specificCountry: countries[number])
                         }
                         .padding()
                     }
